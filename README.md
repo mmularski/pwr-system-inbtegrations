@@ -1,1 +1,1 @@
-## Magento2 MGR
+## mmularski/pwr-system-integrations
