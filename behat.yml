@@ -1,0 +1,9 @@
+default:
+  extensions:
+    Behat\MinkExtension:
+      base_url: 'https://magento2.local/'
+      javascript_session: selenium2
+      browser_name: chrome
+      selenium2:
+        wd_host: http://localhost:4444/wd/hub
+

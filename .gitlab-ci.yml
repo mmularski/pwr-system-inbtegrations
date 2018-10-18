@@ -1,0 +1,137 @@
+image: "php:7.0-cli"
+
+services:
+  - "mysql:latest"
+
+variables:
+  MYSQL_ROOT_PASSWORD: "m2"
+  MYSQL_USER: "m2"
+  MYSQL_PASSWORD: "m2"
+  MYSQL_DATABASE: "m2"
+  PHP_MEMORY_LIMIT: "1024M"
+
+cache:
+  key: "${CI_PROJECT_ID}"
+  untracked: false
+  paths:
+    - "vendor/"
+
+stages:
+  - analysis
+  - prepare
+  - test
+  - build
+
+before_script:
+  - apt-get update -qq
+  - apt-get install -qq -y zip unzip curl git >> /dev/null
+  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  - php composer-setup.php --install-dir=/usr/bin --filename=composer
+  - php -r "unlink('composer-setup.php');"
+
+## Prepare stage tasks:
+
+install-dependencies:
+  stage: prepare
+  only:
+    - "master"
+    - "develop"
+    - "/^release.*$/"
+    - "/^(feature|issue|fix|hotfix|bugfix).*$/"
+  script:
+    - "apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libmcrypt-dev libicu-dev libxslt-dev zlib1g-dev  >> /dev/null"
+    - "docker-php-ext-install -j$(nproc) iconv mcrypt intl xsl zip pdo pdo_mysql soap  >> /dev/null"
+    - "docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/  >> /dev/null"
+    - "docker-php-ext-install -j$(nproc) gd  >> /dev/null"
+    - mkdir ci
+    - touch ci/auth.json
+    - echo '{"http-basic":{"repo.magento.com":{"username":"31664dd134d5aa9575dddea39d579429","password":"d86bd5dc35010ae42b7dc2d79b9b8078"}}}' > ci/auth.json
+    - "cp ci/auth.json ~/.composer"
+    - "composer install --no-progress"
+
+## Test stage tasks:
+
+#phpunit:
+#  stage: test
+#  script:
+#    - "echo 'Test tasks here in future.'"
+
+## Build stage tasks:
+
+magento-install:
+  stage: build
+  only:
+    - "master"
+    - "develop"
+    - "/^release.*$/"
+    - "/^(feature|issue|fix|hotfix|bugfix).*$/"
+  script:
+    - "apt-get install -y zip unzip curl git libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libmcrypt-dev libicu-dev libxslt-dev zlib1g-dev"
+    - "docker-php-ext-install -j$(nproc) iconv mcrypt intl xsl zip pdo pdo_mysql soap"
+    - "docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/"
+    - "docker-php-ext-install -j$(nproc) gd"
+    - "rm -rf var/*"
+    - "rm -f app/etc/env.php"
+    - "rm -f app/etc/config.php"
+    - "php -d memory_limit=$PHP_MEMORY_LIMIT bin/magento setup:install --base-url=http://m2.dev/ --db-host=mysql --db-name=$MYSQL_DATABASE --db-user=$MYSQL_USER --db-password=$MYSQL_ROOT_PASSWORD --admin-firstname=Admin --admin-lastname=Admin --admin-email=user@example.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=PLN --timezone=Europe/Warsaw --use-rewrites=1"
+    - "php -d memory_limit=$PHP_MEMORY_LIMIT bin/magento setup:upgrade"
+    - "php -d memory_limit=$PHP_MEMORY_LIMIT bin/magento setup:di:compile"
+    - "php -d memory_limit=$PHP_MEMORY_LIMIT bin/magento setup:static-content:deploy"
+
+## Analysis stage tasks:
+
+psr2:
+  stage: analysis
+  only:
+    - "/^(feature|issue|fix|bugfix).*$/"
+  allow_failure: false
+  script:
+    - composer global require "squizlabs/php_codesniffer":"^2.7.0" --no-interaction --prefer-dist --ignore-platform-reqs --quiet
+    - /root/.composer/vendor/bin/phpcs --config-set colors 1
+    - /root/.composer/vendor/bin/phpcs --exclude=PSR2.Methods.MethodDeclaration,PSR2.Classes.PropertyDeclaration --extensions=php --standard=PSR2 app/code/ -s
+
+phpcs:
+  stage: analysis
+  only:
+    - "/^(feature|issue|fix|bugfix).*$/"
+  allow_failure: false
+  script:
+    - composer global require "squizlabs/php_codesniffer":"^2.7.0" --no-interaction --prefer-dist --ignore-platform-reqs --quiet
+    - /root/.composer/vendor/bin/phpcs --config-set colors 1
+    - /root/.composer/vendor/bin/phpcs --exclude=Magento.Annotations.RequireAnnotatedMethods,Magento.Annotations.RequireAnnotatedAttributes --extensions=php --standard=dev/tests/static/testsuite/Magento/Test/Php/_files/phpcs/ruleset.xml app/code/ -s
+
+phpmd:
+  stage: analysis
+  only:
+    - "/^(feature|issue|fix|bugfix).*$/"
+  allow_failure: false
+  script:
+    - composer global require "phpmd/phpmd":"^2.4.3" --no-interaction --prefer-dist --ignore-platform-reqs --quiet
+    - /root/.composer/vendor/bin/phpmd app/code/ text dev/tests/static/testsuite/Magento/Test/Php/_files/phpmd/ruleset.xml
+
+phpcpd:
+  stage: analysis
+  only:
+    - "/^(feature|issue|fix|bugfix).*$/"
+  allow_failure: false
+  script:
+    - composer global require "sebastian/phpcpd":"^2.0.4" --no-interaction --prefer-dist --ignore-platform-reqs --quiet
+    - /root/.composer/vendor/bin/phpcpd app/code/
+
+phpdocblock:
+  stage: analysis
+  only:
+    - "/^(feature|issue|fix|bugfix).*$/"
+  allow_failure: false
+  script:
+    - composer global require "block8/php-docblock-checker":"^1.1.0" --no-interaction --prefer-dist --ignore-platform-reqs --quiet
+    - /root/.composer/vendor/bin/phpdoccheck --directory=app/code/
+
+phploc:
+  stage: analysis
+  only:
+    - "/^(feature|issue|fix|bugfix).*$/"
+  allow_failure: false
+  script:
+    - composer global require "phploc/phploc":"^3.0.1" --no-interaction --prefer-dist --ignore-platform-reqs --quiet
+    - /root/.composer/vendor/bin/phploc app/code/
