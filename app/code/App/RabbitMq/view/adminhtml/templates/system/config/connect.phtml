@@ -1,0 +1,62 @@
+<?php /* @var $block \App\RabbitMq\Block\Adminhtml\System\Config\Connect */ ?>
+
+<script>
+    require([
+        'jquery',
+        'prototype'
+    ], function (jQuery) {
+
+        var connectSpan = jQuery('#connect_span');
+        var error_icon = connectSpan.find('.connection_error');
+        var connected_icon = connectSpan.find('.connected');
+        var processing_icon = connectSpan.find('.processing');
+        var connected_message = jQuery('#connect_message_span');
+
+        jQuery('#connect_button').click(function () {
+            var params = {};
+            new Ajax.Request('<?php echo $block->getAjaxUrl() ?>', {
+                parameters: params,
+                loaderArea: false,
+                asynchronous: true,
+                onCreate: function () {
+                    connected_icon.hide();
+                    processing_icon.show();
+                    connected_message.text('');
+                    error_icon.hide();
+                },
+                onSuccess: function (response) {
+                    processing_icon.hide();
+                    var resultText = '';
+
+                    var decoded_response = jQuery.parseJSON(response.responseText);
+
+                    if (true == decoded_response.success) {
+                        resultText = 'Connected successfully';
+                        connected_icon.show();
+                    } else {
+                        resultText = decoded_response.code + ': ' + decoded_response.message;
+                        error_icon.show();
+                        error_icon.attr("title", decoded_response.trace);
+                        connected_message.attr("title", decoded_response.trace);
+                    }
+
+                    connected_message.text(resultText);
+                }
+            });
+        });
+
+    });
+</script>
+
+<?php echo $block->getButtonHtml() ?>
+<span class="connect-indicator" id="connect_span">
+    <img class="processing" hidden="hidden" alt="Connecting" style="margin:0 5px"
+         src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+    <img class="connected" width="20px" height="20px" hidden="hidden" alt="Connected" style="margin:-3px 5px"
+         src="<?php echo $block->getViewFileUrl('images/rule_component_apply.gif') ?>"/>
+    <img class="connection_error" width="20px" height="20px" hidden="hidden" alt="Error" style="margin:-3px 5px"
+         src="<?php echo $block->getViewFileUrl('images/rule_component_remove.gif') ?>"/>
+</span>
+<div id="connecting_results" style="margin: 5px;">
+    <span id="connect_message_span"></span>
+</div>

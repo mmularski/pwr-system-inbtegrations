@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="app" translate="label" sortOrder="300">
+            <label>App</label>
+        </tab>
+        <section id="rabbitmq" translate="label" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>RabbitMq</label>
+            <tab>app</tab>
+            <resource>App_RabbitMq::rabbitmq</resource>
+            <group id="basic_configuration" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Basic Configuration</label>
+                <field id="is_enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable RabbitMq module</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="server_connection" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>RabbitMq server connection</label>
+                <field id="host" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Host</label>
+                    <comment><![CDATA[Default value: <strong>localhost</strong>]]></comment>
+                </field>
+                <field id="port" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Port</label>
+                    <comment><![CDATA[Default value: <strong>5672</strong>]]></comment>
+                </field>
+                <field id="user" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>User</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment><![CDATA[Default value: <strong>guest</strong>]]></comment>
+                </field>
+                <field id="password" translate="label comment" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Password</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment><![CDATA[Default value: <strong>guest</strong>]]></comment>
+                </field>
+                <field id="vhost" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Virtual host</label>
+                    <comment><![CDATA[Default value: <strong>/</strong>]]></comment>
+                </field>
+            </group>
+            <group id="developer" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Developer Tools</label>
+                <field id="attempts_no" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <label><![CDATA[Consumptions attempts number]]></label>
+                    <validate>validate-zero-or-greater integer</validate>
+                    <comment>
+                        <![CDATA[Determines the maximum number of message consumptions attempts. After reaching this number (<strong>Default: 3</strong>) message will be moved to trash.]]></comment>
+                </field>
+                <field id="test_connection" translate="label comment" type="button" sortOrder="40" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
+                    <frontend_model>App\RabbitMq\Block\Adminhtml\System\Config\Connect</frontend_model>
+                    <label>Test connection</label>
+                    <comment><![CDATA[Checks connection with RabbitMq Server]]></comment>
+                </field>
+                <field id="management_ui" translate="label comment" type="button" sortOrder="50" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
+                    <frontend_model>App\RabbitMq\Block\Adminhtml\System\Config\MgmtUi</frontend_model>
+                    <label>RabbitMq Management UI</label>
+                    <comment><![CDATA[Directs to the RabbitMq Management UI]]></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
