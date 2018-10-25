@@ -1,13 +1,8 @@
 <?php
-/**
- * @package  App\ProductUpdater
- * @author Marek Mularczyk <mmularczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
- */
 
 namespace App\ProductUpdater\Model;
 
+use App\ProductUpdater\Api\Data\UpdateRequestInterface;
 use App\RabbitMq\Model\Service\Publisher\AbstractPublisher;
 use App\RabbitMq\Model\Service\Publisher\PublisherInterface;
 
@@ -16,7 +11,10 @@ use App\RabbitMq\Model\Service\Publisher\PublisherInterface;
  */
 class Publisher extends AbstractPublisher implements PublisherInterface
 {
-    protected $model;
+    /**
+     * @var UpdateRequestInterface
+     */
+    protected $request;
 
     /**
      * Prepares data for request
@@ -37,12 +35,14 @@ class Publisher extends AbstractPublisher implements PublisherInterface
      * @param bool $skipQueue
      *
      * @return mixed
+     * @throws \Exception
      */
     public function push($model, $skipQueue = false)
     {
-        $service = $this->getService();
+        $this->setModel($model);
+        $this->setRequestData($this->request->getData());
 
-        $service->logger->info('Product Update Push method invoked for  id: ');
+        $this->getService()->logger->info('Product Update Push method invoked for  id: ');
 
         return parent::push($model, $skipQueue);
     }
@@ -68,7 +68,7 @@ class Publisher extends AbstractPublisher implements PublisherInterface
      */
     public function setModel($model)
     {
-        $this->model = $model;
+        $this->request = $model;
 
         return $this;
     }

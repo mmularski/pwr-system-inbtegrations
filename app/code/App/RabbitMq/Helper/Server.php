@@ -1,10 +1,4 @@
 <?php
-/**
- * @package   App\RabbitMq
- * @author    Wiktor Kaczorowski <wkaczorowski@App.pl>
- * @copyright 2016-2018 App Sp. z o.o.
- * @license   See LICENSE.txt for license details.
- */
 
 namespace App\RabbitMq\Helper;
 
@@ -52,10 +46,6 @@ class Server extends AbstractHelper
      */
     protected function connect($isAjax = false)
     {
-        if (!$this->isModuleEnabled()) {
-            return false;
-        }
-
         try {
             $connection = new AMQPStreamConnection(
                 $this->configHelper->getHost(),
@@ -73,14 +63,6 @@ class Server extends AbstractHelper
                 throw $e;
             }
         }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isModuleEnabled()
-    {
-        return $this->configHelper->isEnabled();
     }
 
     /**

@@ -1,10 +1,4 @@
 <?php
-/**
- * @package   App\RabbitMq
- * @author    Wiktor Kaczorowski <wkaczorowski@App.pl>
- * @copyright 2016-2018 App Sp. z o.o.
- * @license   See LICENSE.txt for license details.
- */
 
 namespace App\RabbitMq\Model\Service;
 
@@ -13,7 +7,7 @@ use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
-use Monolog\Logger as AbstractLogger;
+use Psr\Log\LoggerInterface as AbstractLogger;
 use App\RabbitMq\Helper\Server as ServerHelper;
 use App\RabbitMq\Model\Service\Consumer\AbstractConsumer;
 use App\RabbitMq\Model\Service\Message\AbstractMessage;
@@ -166,9 +160,7 @@ abstract class AbstractService extends AbstractModel
      */
     protected function setChannel()
     {
-        if ($this->serverHelper->isModuleEnabled()) {
-            $this->channel = $this->connection->channel();
-        }
+        $this->channel = $this->connection->channel();
 
         return $this;
     }
@@ -233,22 +225,6 @@ abstract class AbstractService extends AbstractModel
             $message->setService($this);
             $this->setMessage($message);
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getIsEnableConsumePath()
-    {
-        return $this->isEnabledConsumeXmlPath;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIsEnabledPushPath()
-    {
-        return $this->isEnabledPushXmlPath;
     }
 
     /**
@@ -420,15 +396,5 @@ abstract class AbstractService extends AbstractModel
     {
         $this->logger->info('Cosing connection...');
         $this->connection->close();
-    }
-
-    /**
-     * Returns endpoint url used within service. This method should be implemented in child class, if needed.
-     *
-     * @return string
-     */
-    public function getEndpoint()
-    {
-        return '';
     }
 }

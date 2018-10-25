@@ -1,10 +1,4 @@
 <?php
-/**
- * @package  App\ProductUpdater
- * @author Marek Mularczyk <mmularczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
- */
 
 namespace App\ProductUpdater\Console\Command\Worker;
 
@@ -70,7 +64,6 @@ class ProductUpdateWorker extends AbstractWorker
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->initExecute($input, $output);
-        $this->service->getConsumer()->setPrefetchCount($this->prefetchCount);
 
         $exitCode = $this->service->getConsumer()->consume();
 

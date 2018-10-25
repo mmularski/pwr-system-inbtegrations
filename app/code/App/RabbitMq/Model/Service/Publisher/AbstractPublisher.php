@@ -1,10 +1,4 @@
 <?php
-/**
- * @package   App\RabbitMq
- * @author    Wiktor Kaczorowski <wkaczorowski@App.pl>
- * @copyright 2016-2018 App Sp. z o.o.
- * @license   See LICENSE.txt for license details.
- */
 
 namespace App\RabbitMq\Model\Service\Publisher;
 
@@ -26,13 +20,6 @@ abstract class AbstractPublisher extends AbstractElement implements PublisherInt
      * @var array $requestData
      */
     protected $requestData;
-
-    /**
-     * Array containing response errors
-     *
-     * @var array
-     */
-    protected $responseErrors = [];
 
     /**
      * @var ScopeConfigInterface
@@ -62,43 +49,6 @@ abstract class AbstractPublisher extends AbstractElement implements PublisherInt
         $this->loggerHelper = $loggerHelper;
 
         parent::__construct($context, $registry);
-    }
-
-    /**
-     * @return bool
-     */
-    protected function hasRsponseErrors()
-    {
-        return (bool) !empty($this->responseErrors);
-    }
-
-    /**
-     * @param string $errorMsg
-     *
-     * @return $this
-     */
-    protected function addResponseError($errorMsg)
-    {
-        $this->responseErrors[] = $errorMsg;
-
-        return $this;
-    }
-
-    /**
-     * @param bool $asString
-     *
-     * @return array|string
-     */
-    protected function getResponseErrors($asString = false)
-    {
-        if ($asString) {
-            return implode(
-                ', ',
-                $this->responseErrors
-            );
-        }
-
-        return $this->responseErrors;
     }
 
     /**

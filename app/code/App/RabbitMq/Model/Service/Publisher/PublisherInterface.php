@@ -1,15 +1,6 @@
 <?php
-/**
- * @package   App\RabbitMq
- * @author    Wiktor Kaczorowski <wkaczorowski@App.pl>
- * @copyright 2016-2018 App Sp. z o.o.
- * @license   See LICENSE.txt for license details.
- */
 
 namespace App\RabbitMq\Model\Service\Publisher;
-
-use PhpAmqpLib\Message\AMQPMessage;
-use Magento\Framework\Model\AbstractModel;
 
 /**
  * Interface PublisherInterface

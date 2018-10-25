@@ -7,4 +7,6 @@
             </argument>
         </arguments>
     </type>
+    <preference for="App\ProductUpdater\Api\ProductUpdateInterface" type="App\ProductUpdater\Model\Service" />
+    <preference for="App\ProductUpdater\Api\Data\UpdateRequestInterface" type="App\ProductUpdater\Model\Service\UpdateRequest" />
 </config>

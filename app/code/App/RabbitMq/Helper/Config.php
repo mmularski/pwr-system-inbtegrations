@@ -1,10 +1,4 @@
 <?php
-/**
- * @package   App\RabbitMq
- * @author    Wiktor Kaczorowski <wkaczorowski@App.pl>
- * @copyright 2016-2018 App Sp. z o.o.
- * @license   See LICENSE.txt for license details.
- */
 
 namespace App\RabbitMq\Helper;
 
@@ -17,11 +11,6 @@ use Magento\Framework\Encryption\EncryptorInterface;
  */
 class Config extends AbstractHelper
 {
-    /**
-     * Configuration path to module status
-     */
-    const XML_PATH_RABBITMQ_BASIC_IS_ENABLED = 'rabbitmq/basic_configuration/is_enabled';
-
     /**
      * Configuration path to connection host
      */
@@ -82,16 +71,6 @@ class Config extends AbstractHelper
     {
         $this->encryptor = $encryptor;
         parent::__construct($context);
-    }
-
-    /**
-     * Returns module status
-     *
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return (bool) $this->scopeConfig->getValue(self::XML_PATH_RABBITMQ_BASIC_IS_ENABLED);
     }
 
     /**

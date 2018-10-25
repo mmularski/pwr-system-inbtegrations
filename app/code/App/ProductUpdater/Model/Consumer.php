@@ -1,10 +1,4 @@
 <?php
-/**
- * @package  App\ProductUpdater
- * @author Marek Mularczyk <mmularczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
- */
 
 namespace App\ProductUpdater\Model;
 
@@ -38,7 +32,7 @@ class Consumer extends AbstractConsumer implements ConsumerInterface
      *
      * @return void
      */
-    public function callback(AMQPMessage $message, $skipQueue = false)
+    public function callback(AMQPMessage $message)
     {
         $logInfo = [
             'Message ' . $this->getService()->getMessage()->getAMQPMsgId($message) . ' callback invoked.',
@@ -53,6 +47,6 @@ class Consumer extends AbstractConsumer implements ConsumerInterface
         );
 
         // add message acknowledgement to remove it from queue after successful processing
-        parent::callback($message, $skipQueue);
+        parent::callback($message);
     }
 }

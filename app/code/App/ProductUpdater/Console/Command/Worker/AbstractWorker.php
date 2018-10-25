@@ -18,32 +18,6 @@ use App\RabbitMq\Model\Service\AbstractService;
 class AbstractWorker extends Command
 {
     /**
-     * Prefetch count param name
-     * This param defines maximum number of unconsumed messages dispatched to the consumer at the same time
-     */
-    const INPUT_PARAM_PREFETCH_COUNT = 'prefetch_count';
-
-    /**
-     * Default prefetch count
-     */
-    const DEFAULT_PREFETCH_COUNT = 5;
-
-    /**
-     * Minimum prefetch count
-     */
-    const MIN_PREFETCH_COUNT = 1;
-
-    /**
-     * Maximum prefetch count
-     */
-    const MAX_PREFETCH_COUNT = 50;
-
-    /**
-     * @var int $prefetchCount
-     */
-    protected $prefetchCount = self::DEFAULT_PREFETCH_COUNT;
-
-    /**
      * @var State $state
      */
     protected $state;
@@ -69,13 +43,6 @@ class AbstractWorker extends Command
     protected $output;
 
     /**
-     * This flag minimizes worker log output
-     *
-     * @var bool
-     */
-    protected $quietMode = true;
-
-    /**
      * AbstractWorker constructor.
      *
      * @param State $state
@@ -87,18 +54,6 @@ class AbstractWorker extends Command
     }
 
     /**
-     * @param int $count
-     *
-     * @return $this
-     */
-    public function setPrefetchCount($count)
-    {
-        $this->prefetchCount = $count;
-
-        return $this;
-    }
-
-    /**
      * Returns Magento Cli script path
      *
      * @return string
@@ -106,24 +61,6 @@ class AbstractWorker extends Command
     protected function getCliScript()
     {
         return BP . '/bin/magento';
-    }
-
-    /**
-     * Add default configuration for all workers.
-     *
-     * @return void
-     */
-    protected function configure()
-    {
-        $this->addArgument(
-            self::INPUT_PARAM_PREFETCH_COUNT,
-            InputArgument::OPTIONAL,
-            'Number (from ' . self::MIN_PREFETCH_COUNT . ' to ' . self::MAX_PREFETCH_COUNT . ') of messages '
-            . 'which can be dispatched to single consumer. ',
-            self::DEFAULT_PREFETCH_COUNT
-        );
-
-        parent::configure();
     }
 
     /**
@@ -141,29 +78,6 @@ class AbstractWorker extends Command
     }
 
     /**
-     * Checks default input parameters for all workers
-     *
-     * @return void
-     *
-     * @SuppressWarnings(PHPMD.ExitExpression)
-     */
-    protected function checkInput()
-    {
-        $prefetchCount = $this->input->getArgument(self::INPUT_PARAM_PREFETCH_COUNT);
-
-        if (!$this->validatePCount($prefetchCount)) {
-            $this->printError(
-                'Incorrect value for parameter: \'' . self::INPUT_PARAM_PREFETCH_COUNT . '\''
-            );
-            $this->printInfo(
-                $this->getHelpString()
-            );
-
-            exit(0);
-        }
-    }
-
-    /**
      * IInitialize execute method
      *
      * @param InputInterface $input
@@ -173,15 +87,12 @@ class AbstractWorker extends Command
      */
     protected function initExecute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->quietMode) {
-            $this->logger->info('Command ' . $this->getName() . ' invoked.');
-        }
+        $this->logger->info('Command ' . $this->getName() . ' invoked.');
 
         $this->input = $input;
         $this->output = $output;
 
         $this->setAreaCode();
-        $this->checkInput();
     }
 
     /**
