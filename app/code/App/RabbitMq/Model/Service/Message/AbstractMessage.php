@@ -4,7 +4,6 @@ namespace App\RabbitMq\Model\Service\Message;
 
 use App\RabbitMq\Model\Service\AbstractElement;
 use PhpAmqpLib\Message\AMQPMessage;
-use PhpAmqpLib\Wire;
 
 /**
  * Class AbstractMessage
@@ -17,64 +16,9 @@ abstract class AbstractMessage extends AbstractElement
     const PROPERTY_MESSAGE_ID = 'message_id';
 
     /**
-     * Application headers property name
-     */
-    const PROPERTY_APPLICATION_HEADERS = 'application_headers';
-
-    /**
-     * @var string $msgData
-     */
-    protected $msgData;
-
-    /**
-     * @var int $deliveryMode
-     */
-    protected $deliveryMode = AMQPMessage::DELIVERY_MODE_PERSISTENT;
-
-    /**
      * @var null|AMQPMessage
      */
     protected $message;
-
-    /**
-     * @param array|string $msgData
-     *
-     * @return $this
-     */
-    public function setMsgData($msgData)
-    {
-        $this->msgData = $msgData;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMsgData()
-    {
-        return $this->msgData;
-    }
-
-    /**
-     * @param int $mode
-     *
-     * @return $this
-     */
-    public function setDeliveryMode($mode)
-    {
-        $this->deliveryMode = $mode;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDeliveryMode()
-    {
-        return $this->deliveryMode;
-    }
 
     /**
      * Creates AMQPMessage object
@@ -85,13 +29,7 @@ abstract class AbstractMessage extends AbstractElement
      */
     public function createMessage($data = '')
     {
-        $this->setMsgData($data);
-        $message = new AMQPMessage(
-            $this->getMsgData(),
-            [
-                'delivery_mode' => $this->deliveryMode,
-            ]
-        );
+        $message = new AMQPMessage($data, ['delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT]);
 
         // set message id
         $message->set(self::PROPERTY_MESSAGE_ID, uniqid($this->getService()::SERVICE_NAME));

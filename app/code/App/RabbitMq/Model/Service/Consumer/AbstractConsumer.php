@@ -14,25 +14,11 @@ use App\RabbitMq\Model\Service\Message\AbstractMessage;
 abstract class AbstractConsumer extends AbstractElement implements ConsumerInterface
 {
     /**
-     * Sets prefetch count for the channel
-     *
-     * @return void;
-     */
-    public function basicQos()
-    {
-        $this->getService()->getChannel()->basic_qos(
-            null,
-            5, //limit of unacknowledged messages per queue
-            null
-        );
-    }
-
-    /**
      * Consumer callback method
      *
      * @param AMQPMessage $message
      *
-     * @return mixed;
+     * @return void;
      */
     public function callback(AMQPMessage $message)
     {
@@ -43,10 +29,7 @@ abstract class AbstractConsumer extends AbstractElement implements ConsumerInter
         //Add acknowledgment - remove message from queue
         $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
 
-        $this->getService()->logger->info(
-            'Acknowledgement added for message: ' . $msgId
-        );
-
+        $this->getService()->logger->info('Acknowledgement added for message: ' . $msgId);
     }
 
     /**
@@ -57,7 +40,12 @@ abstract class AbstractConsumer extends AbstractElement implements ConsumerInter
      */
     public function consume()
     {
-        $this->basicQos();
+        $this->getService()->getChannel()->basic_qos(
+            null,
+            1, //limit of unacknowledged messages per queue
+            null
+        );
+
         $this->getService()->declareQueue();
 
         $this->getService()->getChannel()->basic_consume(
@@ -73,13 +61,13 @@ abstract class AbstractConsumer extends AbstractElement implements ConsumerInter
             ]
         );
 
-        while (count($this->getService()->getChannel()->callbacks)) {
+        $counter = count($this->getService()->getChannel()->callbacks);
+
+        while ($counter > 0) {
             try {
-                $this->getService()->getChannel()->wait(
-                    null,
-                    true,
-                    1
-                );
+                $counter--;
+
+                $this->getService()->getChannel()->wait();
             } catch (\Exception $e) {
                 $this->getService()->logger->error($e->getMessage());
 

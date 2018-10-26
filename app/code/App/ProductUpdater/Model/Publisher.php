@@ -17,18 +17,6 @@ class Publisher extends AbstractPublisher implements PublisherInterface
     protected $request;
 
     /**
-     * Prepares data for request
-     *
-     * @return mixed
-     */
-    public function prepareData()
-    {
-        $this->requestData = ['aadsadasdasd'];
-
-        return $this;
-    }
-
-    /**
      * Pushes new job to queue.
      *
      * @param mixed $model
@@ -37,14 +25,14 @@ class Publisher extends AbstractPublisher implements PublisherInterface
      * @return mixed
      * @throws \Exception
      */
-    public function push($model, $skipQueue = false)
+    public function push($model)
     {
         $this->setModel($model);
         $this->setRequestData($this->request->getData());
 
         $this->getService()->logger->info('Product Update Push method invoked for  id: ');
 
-        return parent::push($model, $skipQueue);
+        return parent::push($model);
     }
 
     /**
@@ -54,9 +42,7 @@ class Publisher extends AbstractPublisher implements PublisherInterface
      */
     public function getRequest()
     {
-        $this->prepareData();
-
-        return $this->getRequestData(true);
+        return json_encode($this->request);
     }
 
     /**

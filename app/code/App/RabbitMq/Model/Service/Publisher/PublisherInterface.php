@@ -10,13 +10,6 @@ namespace App\RabbitMq\Model\Service\Publisher;
 interface PublisherInterface
 {
     /**
-     * Prepares data for request
-     *
-     * @return mixed
-     */
-    public function prepareData();
-
-    /**
      * Generates and returns request to store it on queue for further processing
      *
      * @return array|string|mixed
@@ -24,14 +17,13 @@ interface PublisherInterface
     public function getRequest();
 
     /**
-     * Pushes new job to queue or process it immediately
+     * Pushes new job to queue
      *
      * @param mixed $model
-     * @param bool $skipQueue
      *
      * @return mixed
      */
-    public function push($model, $skipQueue = false);
+    public function push($model);
 
     /**
      * Sets model for further processing and request / job preparation

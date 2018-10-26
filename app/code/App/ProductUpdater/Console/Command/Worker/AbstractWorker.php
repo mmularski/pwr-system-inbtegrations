@@ -54,30 +54,6 @@ class AbstractWorker extends Command
     }
 
     /**
-     * Returns Magento Cli script path
-     *
-     * @return string
-     */
-    protected function getCliScript()
-    {
-        return BP . '/bin/magento';
-    }
-
-    /**
-     * Returns help information string for current command
-     *
-     * @return string
-     */
-    protected function getHelpString()
-    {
-        $command = 'php -f ' . $this->getCliScript() . ' ' . $this->getName() . ' -h';
-
-        return shell_exec(
-            $command
-        );
-    }
-
-    /**
      * IInitialize execute method
      *
      * @param InputInterface $input
@@ -107,18 +83,6 @@ class AbstractWorker extends Command
         } catch (\Exception $e) {
             // In this case the area code should be already set, so just do nothing and continue
         }
-    }
-
-    /**
-     * Validates prefetch caount
-     *
-     * @param int $pCount
-     *
-     * @return bool
-     */
-    protected function validatePCount($pCount)
-    {
-        return (bool) ($pCount >= self::MIN_PREFETCH_COUNT) && ($pCount <= self::MAX_PREFETCH_COUNT);
     }
 
     /**

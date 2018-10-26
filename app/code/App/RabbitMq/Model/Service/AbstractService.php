@@ -366,10 +366,10 @@ abstract class AbstractService extends AbstractModel
         try {
             $this->channel->queue_declare(
                 $this->queue->getName(),
-                $this->queue->isPassive(),
-                $this->queue->isDurable(),
-                $this->queue->isExclusive(),
-                $this->queue->isAutoDelete()
+                false,
+                true,
+                false,
+                false
             );
         } catch (\Exception $e) {
             throw $e;

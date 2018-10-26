@@ -5,9 +5,7 @@ namespace App\RabbitMq\Model\Service\Consumer;
 use PhpAmqpLib\Message\AMQPMessage;
 
 /**
- * Interface PublisherInterface
- *
- * @package App\RabbitMq\Model\Service\Publisher
+ * Interface ConsumerInterface
  */
 interface ConsumerInterface
 {

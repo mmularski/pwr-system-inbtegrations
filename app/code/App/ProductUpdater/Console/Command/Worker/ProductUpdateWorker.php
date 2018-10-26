@@ -69,10 +69,7 @@ class ProductUpdateWorker extends AbstractWorker
 
         switch ($exitCode) {
             case AbstractService::EXIT_CODE_SUCCESS:
-                $this->printInfo('Order cancel export worker executed successfully.');
-                break;
-            case AbstractService::EXIT_CODE_TIMEOUT:
-                $this->printInfo('Consumer exceeded max execution time.');
+                $this->printInfo('Worker executed successfully.');
                 break;
             case AbstractService::EXIT_CODE_ERROR:
             default:

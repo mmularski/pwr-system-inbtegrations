@@ -28,7 +28,6 @@ class Consumer extends AbstractConsumer implements ConsumerInterface
      * Callback method for message consumer
      *
      * @param AMQPMessage $message
-     * @param bool        $skipQueue
      *
      * @return void
      */

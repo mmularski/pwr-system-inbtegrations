@@ -56,13 +56,6 @@ class Service extends AbstractService implements ProductUpdateInterface
      */
     public function execute(UpdateRequestInterface $object)
     {
-        $this->getPublisher()->push($object);
-
-        return json_encode(
-            [
-                'message',
-                'Request has been successfully pushed to queue',
-            ]
-        );
+        return $this->getPublisher()->push($object);
     }
 }
