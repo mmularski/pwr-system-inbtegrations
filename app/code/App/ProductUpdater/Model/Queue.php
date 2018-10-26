@@ -14,7 +14,7 @@ class Queue extends AbstractQueue
     /**
      * Queue name
      */
-    const PRODUCT_UPDATER_QUQUE_NAME = 'product_updater';
+    const PRODUCT_UPDATER_QUEUE_NAME = 'product_updater';
 
     /**
      * AbstractPublisher constructor.
@@ -26,6 +26,6 @@ class Queue extends AbstractQueue
     {
         parent::__construct($context, $registry);
 
-        $this->setName(self::PRODUCT_UPDATER_QUQUE_NAME);
+        $this->setName(self::PRODUCT_UPDATER_QUEUE_NAME);
     }
 }

@@ -26,21 +26,6 @@ abstract class AbstractService extends AbstractModel
      */
     const SERVICE_NAME = 'default_service';
 
-    /**
-     * Direct exchange type
-     */
-    const EXCHANGE_TYPE_DIRECT = 'direct';
-
-    /**
-     * Fanout exchange type
-     */
-    const EXCHANGE_TYPE_FANOUT = 'fanout';
-
-    /**
-     * Topic exchange type
-     */
-    const EXCHANGE_TYPE_TOPIC = 'topic';
-
     /**#@+
      * Available script exit codes
      */
@@ -57,39 +42,7 @@ abstract class AbstractService extends AbstractModel
      */
     const SERVICE_TYPE_REST = 'rest';
 
-    const SERVICE_TYPE_SOAP = 'soap';
-
     /**#@-*/
-
-    /**
-     * Available exchange types
-     *
-     * @var array $allExchangeTypes
-     */
-    protected $allExchangeTypes = [
-        self::EXCHANGE_TYPE_DIRECT,
-        self::EXCHANGE_TYPE_FANOUT,
-        self::EXCHANGE_TYPE_TOPIC,
-    ];
-
-    /**
-     * XML path for Enable/Disable pushing messages
-     *
-     * @var string
-     */
-    protected $isEnabledPushXmlPath = '';
-
-    /**
-     * XML path for Enable/Disable consuming messages
-     *
-     * @var string
-     */
-    protected $isEnabledConsumeXmlPath = '';
-
-    /**
-     * @var string $exchangeType
-     */
-    protected $exchangeType = self::EXCHANGE_TYPE_DIRECT;
 
     /**
      * @var null|AMQPStreamConnection $connection
@@ -147,6 +100,7 @@ abstract class AbstractService extends AbstractModel
      * Sets AMQPStreamConnection
      *
      * @return void
+     * @throws \Exception
      */
     protected function setConnection()
     {
@@ -184,6 +138,8 @@ abstract class AbstractService extends AbstractModel
      * @param null $publisher
      * @param null $consumer
      * @param null $message
+     *
+     * @throws \Exception
      */
     public function __construct(
         Context $context,
@@ -225,27 +181,6 @@ abstract class AbstractService extends AbstractModel
             $message->setService($this);
             $this->setMessage($message);
         }
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return $this
-     * @throws \Exception
-     */
-    public function setExchangeType($type)
-    {
-        if (!in_array(
-            $type,
-            $this->allExchangeTypes
-        )
-        ) {
-            throw new \Exception('Incorrect exchange type.');
-        }
-
-        $this->exchangeType = $type;
-
-        return $this;
     }
 
     /**

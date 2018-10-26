@@ -37,26 +37,6 @@ class Config extends AbstractHelper
     const XML_PATH_RABBITMQ_CONNECTION_VHOST = 'rabbitmq/server_connection/vhost';
 
     /**
-     * Configuration path to send email report option
-     */
-    const XML_PATH_RABBITMQ_DEV_SEND_EMAIL_REPORT = 'rabbitmq/developer/send_email_report';
-
-    /**
-     * Configuration path to use trash option
-     */
-    const XML_PATH_RABBITMQ_DEV_USE_TRASH = 'rabbitmq/developer/use_trash';
-
-    /**
-     * Configuration path to maximum number of messages consumptions attempts
-     */
-    const XML_PATH_RABBITMQ_DEV_ATTEMPTS_NO = 'rabbitmq/developer/attempts_no';
-
-    /**
-     * Default maximum number of messages consumptions attempts
-     */
-    const CONSUME_MAX_ATTEMPTS_NO = 3;
-
-    /**
      * @var EncryptorInterface $encryptor
      */
     protected $encryptor;
@@ -125,21 +105,5 @@ class Config extends AbstractHelper
     public function getVhost()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_RABBITMQ_CONNECTION_VHOST);
-    }
-
-    /**
-     * Returns configuration value for maximum number of message consumptions attempts
-     *
-     * @return int
-     */
-    public function getMaxAttemptsNo()
-    {
-        $attemptsNo = $this->scopeConfig->getValue(self::XML_PATH_RABBITMQ_DEV_ATTEMPTS_NO);
-
-        if (null === $attemptsNo) {
-            return self::CONSUME_MAX_ATTEMPTS_NO;
-        }
-
-        return (int) $attemptsNo;
     }
 }

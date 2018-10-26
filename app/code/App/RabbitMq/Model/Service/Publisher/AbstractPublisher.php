@@ -13,33 +13,6 @@ use App\RabbitMq\Model\Service\Message\AbstractMessage;
 abstract class AbstractPublisher extends AbstractElement implements PublisherInterface
 {
     /**
-     * @var array $requestData
-     */
-    protected $requestData;
-
-    /**
-     * Sets data for request
-     *
-     * @param array $data
-     *
-     * @return $this
-     */
-    public function setRequestData($data)
-    {
-        $this->requestData = $data;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequestData()
-    {
-        return json_encode($this->requestData);
-    }
-
-    /**
      * @param AbstractMessage $message
      *
      * @return void
@@ -70,14 +43,14 @@ abstract class AbstractPublisher extends AbstractElement implements PublisherInt
         // $model object should be set in the child Publisher class
 
         try {
-            $request = $this->getRequest();
-            $this->getService()->getMessage()->createMessage($request);
+            $messageData = json_encode($model->getData());
 
+            $this->getService()->getMessage()->createMessage($messageData);
             $this->publish($this->getService()->getMessage());
 
             $logInfo = [
                 'Message ' . $this->getService()->getMessage()->getAMQPMsgId() . ' sent to queue:',
-                'body: ' . $this->getRequestData(),
+                'body: ' . $messageData,
             ];
 
             $this->getService()->logger->info(implode(PHP_EOL, $logInfo));
@@ -85,7 +58,7 @@ abstract class AbstractPublisher extends AbstractElement implements PublisherInt
             // replace message body with body length in response
             return [
                 'Message ' . $this->getService()->getMessage()->getAMQPMsgId() . ' sent to queue:',
-                sprintf('body: length-%s.', strlen($this->getRequestData())),
+                sprintf('body: length-%s.', strlen($messageData)),
             ];
 
         } catch (\Exception $e) {

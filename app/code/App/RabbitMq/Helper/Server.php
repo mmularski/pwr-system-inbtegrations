@@ -69,6 +69,7 @@ class Server extends AbstractHelper
      * Returns AMQP connection object
      *
      * @return AMQPStreamConnection
+     * @throws \Exception
      */
     public function getConnection()
     {

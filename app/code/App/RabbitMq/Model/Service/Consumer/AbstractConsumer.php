@@ -5,8 +5,6 @@ namespace App\RabbitMq\Model\Service\Consumer;
 use App\RabbitMq\Model\Service\AbstractService;
 use App\RabbitMq\Model\Service\AbstractElement;
 use PhpAmqpLib\Message\AMQPMessage;
-use PhpAmqpLib\Exception\AMQPTimeoutException;
-use App\RabbitMq\Model\Service\Message\AbstractMessage;
 
 /**
  * Class AbstractConsumer

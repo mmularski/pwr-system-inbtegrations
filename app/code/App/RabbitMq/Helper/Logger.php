@@ -9,13 +9,5 @@ use Magento\Framework\App\Helper\AbstractHelper;
  */
 class Logger extends AbstractHelper
 {
-    /**
-     * Returns the type of the current environment
-     *
-     * @return string
-     */
-    public function getEnvType()
-    {
-        return 'dev';
-    }
+
 }
