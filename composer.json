@@ -71,10 +71,6 @@
         {
             "type": "composer",
             "url": "https://repo.magento.com/"
-        },
-        {
-            "type": "composer",
-            "url": "https://packagist.divante.pl"
         }
     ],
     "extra": {
