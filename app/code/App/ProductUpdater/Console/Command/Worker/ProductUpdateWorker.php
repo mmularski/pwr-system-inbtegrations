@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\RabbitMq\Model\Service\AbstractService;
 use App\ProductUpdater\Model\Service;
-use Psr\Log\LoggerInterface as Logger;
+use App\RabbitMq\Logger\Logger;
 
 /**
  * Class ProductUpdateWorker
@@ -27,14 +27,14 @@ class ProductUpdateWorker extends AbstractWorker
     /**
      * ProductWorkerCommand constructor.
      *
-     * @param State        $state
-     * @param Logger       $logger
-     * @param Service      $service
+     * @param State $state
+     * @param Logger $logger
+     * @param Service $service
      */
     public function __construct(State $state, Logger $logger, Service $service)
     {
         $this->service = $service;
-        $this->logger  = $logger;
+        $this->logger = $logger;
 
         parent::__construct($state);
     }
@@ -54,7 +54,7 @@ class ProductUpdateWorker extends AbstractWorker
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @throws \Exception

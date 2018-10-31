@@ -8,7 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Psr\Log\LoggerInterface;
+use App\RabbitMq\Logger\Logger;
 use App\RabbitMq\Model\Service\AbstractService;
 
 /**
@@ -23,7 +23,7 @@ class AbstractWorker extends Command
     protected $state;
 
     /**
-     * @var LoggerInterface $logger
+     * @var Logger $logger
      */
     protected $logger;
 
@@ -47,7 +47,8 @@ class AbstractWorker extends Command
      *
      * @param State $state
      */
-    public function __construct(State $state) {
+    public function __construct(State $state)
+    {
         $this->state = $state;
 
         parent::__construct();

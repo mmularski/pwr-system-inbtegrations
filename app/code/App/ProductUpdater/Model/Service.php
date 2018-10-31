@@ -8,7 +8,7 @@ use App\RabbitMq\Helper\Server as ServerHelper;
 use App\RabbitMq\Model\Service\AbstractService;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
-use Psr\Log\LoggerInterface as AbstractLogger;
+use App\RabbitMq\Logger\Logger;
 
 /**
  * Class Service.
@@ -26,17 +26,19 @@ class Service extends AbstractService implements ProductUpdateInterface
      * @param Context $context
      * @param Registry $registry
      * @param ServerHelper $serverHelper
-     * @param AbstractLogger $logger
+     * @param Logger $logger
      * @param Queue $queue
      * @param Publisher $publisher
      * @param Consumer $consumer
      * @param Message $message
+     *
+     * @throws \Exception
      */
     public function __construct(
         Context $context,
         Registry $registry,
         ServerHelper $serverHelper,
-        AbstractLogger $logger,
+        Logger $logger,
         Queue $queue,
         Publisher $publisher,
         Consumer $consumer,

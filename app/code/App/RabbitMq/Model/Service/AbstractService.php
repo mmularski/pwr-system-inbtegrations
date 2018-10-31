@@ -7,7 +7,7 @@ use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
-use Psr\Log\LoggerInterface as AbstractLogger;
+use App\RabbitMq\Logger\Logger;
 use App\RabbitMq\Helper\Server as ServerHelper;
 use App\RabbitMq\Model\Service\Consumer\AbstractConsumer;
 use App\RabbitMq\Model\Service\Message\AbstractMessage;
@@ -92,7 +92,7 @@ abstract class AbstractService extends AbstractModel
     protected $type = self::SERVICE_TYPE_REST;
 
     /**
-     * @var AbstractLogger $logger
+     * @var Logger $logger
      */
     public $logger;
 
@@ -133,7 +133,7 @@ abstract class AbstractService extends AbstractModel
      * @param Context $context
      * @param Registry $registry
      * @param ServerHelper $serverHelper
-     * @param AbstractLogger $logger
+     * @param Logger $logger
      * @param null $queue
      * @param null $publisher
      * @param null $consumer
@@ -145,7 +145,7 @@ abstract class AbstractService extends AbstractModel
         Context $context,
         Registry $registry,
         ServerHelper $serverHelper,
-        AbstractLogger $logger,
+        Logger $logger,
         $queue = null,
         $publisher = null,
         $consumer = null,
