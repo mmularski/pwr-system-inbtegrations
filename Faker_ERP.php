@@ -43,8 +43,9 @@ while (true) {
     );
 
     $response = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-    echo "Response from Magento:  $response \n";
+    echo "Response from Magento:  $response\nResponse code: $code \n\n";
 
     curl_close($ch);
     sleep($interval);
