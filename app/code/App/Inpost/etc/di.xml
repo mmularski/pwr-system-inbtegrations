@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="inpost_import" xsi:type="object">App\Inpost\Console\Command\Import</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="App\Inpost\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="App\Inpost\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">inPostLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">App\Inpost\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <preference for="App\Inpost\Api\Data\PointInterface" type="App\Inpost\Model\Point" />
+    <preference for="App\Inpost\Api\PointRepositoryInterface" type="App\Inpost\Model\PointRepository" />
+    <preference for="App\Inpost\Api\Data\PointSearchResultInterface" type="Magento\Framework\Api\SearchResults" />
+    <preference for="App\Inpost\Api\PointServiceInterface" type="App\Inpost\Model\PointService" />
+</config>
