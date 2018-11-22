@@ -34,7 +34,7 @@
                         <br />
                         <text>
                             <strong>Street:</strong>
-                            <xsl:value-of select="street" />
+                            <xsl:value-of select="concat(' ',street)" />
                             <xsl:value-of select="concat(' ', building)" />
                         </text>
                         <br />

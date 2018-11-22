@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <inpost>
+            <general>
+                <enabled>1</enabled>
+                <sandbox>1</sandbox>
+                <api_url>https://api-shipx-pl.easypack24.net</api_url>
+                <sandbox_api_url>https://sandbox-api-shipx-pl.easypack24.net</sandbox_api_url>
+            </general>
+        </inpost>
+        <carriers>
+            <inpost_paczkomaty>
+                <active>1</active>
+                <sallowspecific>1</sallowspecific>
+                <specificcountry>PL</specificcountry>
+                <model>App\Inpost\Model\Carrier\Inpost</model>
+                <name>Paczkomat 24/7 InPost</name>
+                <price>10.0</price>
+                <title>Paczkomat 24/7 InPost</title>
+                <type>I</type>
+                <sort_order>4</sort_order>
+                <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.
+                </specificerrmsg>
+            </inpost_paczkomaty>
+        </carriers>
+    </default>
+</config>
