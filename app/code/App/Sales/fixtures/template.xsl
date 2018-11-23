@@ -32,7 +32,6 @@
                         </text>
                         <br />
                         <br />
-                        <br />
                     </xsl:for-each>
                     <h3>
                         <strong>
