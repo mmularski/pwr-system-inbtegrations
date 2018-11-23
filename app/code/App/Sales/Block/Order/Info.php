@@ -48,28 +48,28 @@ class Info extends MagentoInfo
         parent::__construct($context, $registry, $paymentHelper, $addressRenderer, $data);
         $this->clientFactory = $clientFactory;
     }
-
-    /**
-     * Convert array to XML
-     *
-     * @param SimpleXMLElement $object
-     * @param array $data
-     */
-    public function to_xml(SimpleXMLElement $object, array $data)
-    {
-        foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                $new_object = $object->addChild($key);
-                $this->to_xml($new_object, $value);
-            } else {
-                if (is_int($key)) {
-                    $key = 'item';
-                }
-
-                $object->addChild($key, $value);
-            }
-        }
-    }
+//
+//    /**
+//     * Convert array to XML
+//     *
+//     * @param SimpleXMLElement $object
+//     * @param array $data
+//     */
+//    public function to_xml(SimpleXMLElement $object, array $data)
+//    {
+//        foreach ($data as $key => $value) {
+//            if (is_array($value)) {
+//                $new_object = $object->addChild($key);
+//                $this->to_xml($new_object, $value);
+//            } else {
+//                if (is_int($key)) {
+//                    $key = 'item';
+//                }
+//
+//                $object->addChild($key, $value);
+//            }
+//        }
+//    }
 
     /**
      * Transform Order data via XSLT

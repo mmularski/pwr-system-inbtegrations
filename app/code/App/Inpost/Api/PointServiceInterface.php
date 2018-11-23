@@ -8,17 +8,14 @@ namespace App\Inpost\Api;
 interface PointServiceInterface
 {
     /**
-     * @param string $query
-     *
      * @return array
      */
-    public function getPoints($query = 'all');
+    public function getPoints();
 
     /**
-     * @param string $cartId
      * @param string $pointName
      *
      * @return bool
      */
-    public function savePoint($cartId, $pointName);
+    public function savePoint($pointName);
 }

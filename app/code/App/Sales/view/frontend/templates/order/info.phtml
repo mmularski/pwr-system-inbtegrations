@@ -8,7 +8,14 @@
 
 ?>
 <?php /** @var $block \App\Sales\Block\Order\Info */ ?>
-<?php $_order = $block->getOrder() ?>
+<?php $order = $block->getOrder() ?>
+
 <div class="block block-order-details-view">
     <?php echo $block->getShippingInformationXSLT(); ?>
 </div>
+
+<?php if($order->getShippingDescription() === 'Paczkomat 24/7 InPost - Inpost') : ?>
+    <div class="block block-order-details-view">
+        <h2><strong>Inpost Point: <?php echo $order->getInpostPoint(); ?></strong></h2>
+    </div>
+<?php endif; ?>

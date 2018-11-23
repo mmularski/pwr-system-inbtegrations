@@ -2,12 +2,10 @@
 
 namespace App\Inpost\Model;
 
+use Magento\Customer\Model\Session;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilderFactory;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Quote\Api\Data\CartInterface;
-use Magento\Quote\Model\QuoteFactory;
-use Magento\Quote\Model\QuoteIdMaskFactory;
 use App\Inpost\Api\Data\PointInterface;
 use App\Inpost\Api\PointRepositoryInterface;
 use App\Inpost\Api\PointServiceInterface;
@@ -34,14 +32,9 @@ class PointService implements PointServiceInterface
     protected $logger;
 
     /**
-     * @var QuoteFactory
+     * @var Session
      */
-    protected $quoteFactory;
-
-    /**
-     * @var QuoteIdMaskFactory
-     */
-    protected $quoteIdMaskFactory;
+    private $customerSession;
 
     /**
      * PointService constructor.
@@ -49,45 +42,30 @@ class PointService implements PointServiceInterface
      * @param PointRepositoryInterface $pointRepository
      * @param SearchCriteriaBuilderFactory $searchCriteriaBuilderFactory
      * @param Logger $logger
-     * @param QuoteFactory $quoteFactory
-     * @param QuoteIdMaskFactory $quoteIdMaskFactory
+     * @param Session $customerSession
      */
     public function __construct(
         PointRepositoryInterface $pointRepository,
         SearchCriteriaBuilderFactory $searchCriteriaBuilderFactory,
         Logger $logger,
-        QuoteFactory $quoteFactory,
-        QuoteIdMaskFactory $quoteIdMaskFactory
+        Session $customerSession
     ) {
         $this->pointRepository = $pointRepository;
         $this->searchCriteriaBuilderFactory = $searchCriteriaBuilderFactory;
         $this->logger = $logger;
-        $this->quoteFactory = $quoteFactory;
-        $this->quoteIdMaskFactory = $quoteIdMaskFactory;
+        $this->customerSession = $customerSession;
     }
 
     /**
-     * @param string $query
-     *
      * @return array
      */
-    public function getPoints($query = 'all')
+    public function getPoints()
     {
         $result = [];
 
         /** @var SearchCriteriaBuilder $searchCriteria */
         $searchCriteria = $this->searchCriteriaBuilderFactory->create();
         $searchCriteria->addFilter(PointInterface::TO_DELETE_FLAG, 0, 'eq');
-
-        if (preg_match('~[0-9]~', $query)) {
-            $searchCriteria->addFilter(PointInterface::POST_CODE, $query, 'like');
-        } elseif ('all' != $query) {
-            $searchCriteria->addFilter(
-                PointInterface::CITY,
-                '%' . str_replace(' ', '%', ucwords($query)) . '%',
-                'like'
-            );
-        }
 
         try {
             $result = $this->pointRepository->getList($searchCriteria->create())->getItems();
@@ -101,41 +79,23 @@ class PointService implements PointServiceInterface
     }
 
     /**
-     * @param string $cartId
      * @param string $pointName
      *
      * @return bool
      */
-    public function savePoint($cartId, $pointName)
+    public function savePoint($pointName)
     {
         try {
-            $quoteId = null;
-
-            //check guest or user cart
-            if (preg_match("/[a-z]/i", $cartId)) {
-                $quoteIdMask = $this->quoteIdMaskFactory->create()->load($cartId, 'masked_id');
-                $quoteId = (int) $quoteIdMask->getQuoteId();
-            } else {
-                $quoteId = (int) $cartId;
-            }
-
-            /** @var CartInterface $quote */
-            $quote = $this->quoteFactory->create();
-
-            $quote->getResource()->load($quote, $quoteId, CartInterface::KEY_ENTITY_ID);
-            $quote->setInpostName($pointName);
-            $quote->getResource()->save($quote);
+            $customer = $this->customerSession->getCustomer();
+            $customer->getResource()->getConnection()->update(
+                'customer_entity',
+                ['inpost_point' => $pointName],
+                ['entity_id=?' => $customer->getEntityId()]
+            );
 
             return true;
         } catch (\Exception $ex) {
-            $this->logger->error(
-                sprintf(
-                    'Point save error. Exception Message: %s. Quote id: %d. Point name: %s.',
-                    $ex->getMessage(),
-                    $quoteId ?? 'undefined',
-                    $pointName
-                )
-            );
+            $this->logger->error(sprintf('Point save error. Exception Message: %s', $ex->getMessage()));
         }
 
         return false;

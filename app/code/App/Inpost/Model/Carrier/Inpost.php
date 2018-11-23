@@ -20,12 +20,12 @@ class Inpost extends AbstractCarrier implements CarrierInterface
     /**
      * @var string
      */
-    protected $_code = 'inpost_paczkomaty';
+    protected $_code = 'inpost';
 
     /**
      * @var string
      */
-    protected $method = 'inpost_paczkomaty_inpost_paczkomaty';
+    protected $method = 'inpost_inpost';
 
     /**
      * @var ResultFactory
@@ -64,7 +64,7 @@ class Inpost extends AbstractCarrier implements CarrierInterface
      */
     public function getAllowedMethods()
     {
-        return ['inpost_paczkomaty' => $this->getConfigData('name')];
+        return ['inpost' => $this->getConfigData('name')];
     }
 
     /**
