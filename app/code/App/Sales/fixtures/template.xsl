@@ -10,18 +10,12 @@
                     <h2>
                         <strong>
                             <text>Order status:
-                                <xsl:value-of select="summary/order/status" />
+                                <xsl:value-of select="root/order/status" />
                             </text>
                         </strong>
                     </h2>
                     <br />
-                    <xsl:for-each select="summary/customer">
-                        <strong>
-                            <h3>
-                                <text>Delivery address:</text>
-                            </h3>
-                        </strong>
-                        <br />
+                    <xsl:for-each select="root/customer">
                         <text>
                             <strong>First Name:</strong>
                             <xsl:value-of select="concat(' ', firstName)" />
@@ -33,46 +27,50 @@
                         </text>
                         <br />
                         <text>
-                            <strong>Street:</strong>
-                            <xsl:value-of select="concat(' ',street)" />
-                            <xsl:value-of select="concat(' ', building)" />
+                            <strong>E-mail:</strong>
+                            <xsl:value-of select="concat(' ', email)" />
                         </text>
                         <br />
-                        <text>
-                            <strong>City:</strong>
-                            <xsl:value-of select="concat(' ', city)" />
-                        </text>
-                        <br />
-                        <text>
-                            <strong>Post Code:</strong>
-                            <xsl:value-of select="concat(' ', postCode)" />
-                        </text>
                         <br />
                         <br />
                     </xsl:for-each>
+                    <h3>
+                        <strong>
+                            <text>Shipping method:
+                                <xsl:value-of select="root/shipping" />
+                            </text>
+                        </strong>
+                    </h3>
+                    <br />
                     <table border="1">
                         <tr bgcolor="#1979c3" style="color:white">
-                            <th style="text-align:left">SKU</th>
                             <th style="text-align:left">Name</th>
-                            <th style="text-align:left">Count</th>
                             <th style="text-align:left">Price</th>
                         </tr>
-                        <xsl:for-each select="summary/package/item">
-                            <tr>
-                                <td>
-                                    <xsl:value-of select="sku" />
-                                </td>
-                                <td>
-                                    <xsl:value-of select="name" />
-                                </td>
-                                <td>
-                                    <xsl:value-of select="count" />
-                                </td>
-                                <td>
-                                    <xsl:value-of select="price" />
-                                </td>
-                            </tr>
-                        </xsl:for-each>
+                        <tr>
+                            <td>
+                                Order subtotal
+                            </td>
+                            <td>
+                                <xsl:value-of select="root/order_subtotal" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Shipping costs
+                            </td>
+                            <td>
+                                <xsl:value-of select="root/shipping_cost" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Grand Total
+                            </td>
+                            <td>
+                                <strong><xsl:value-of select="root/order_grandtotal" /></strong>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>

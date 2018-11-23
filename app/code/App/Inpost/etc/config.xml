@@ -10,7 +10,7 @@
             </general>
         </inpost>
         <carriers>
-            <inpost_paczkomaty>
+            <inpost>
                 <active>1</active>
                 <sallowspecific>1</sallowspecific>
                 <specificcountry>PL</specificcountry>
@@ -22,7 +22,7 @@
                 <sort_order>4</sort_order>
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.
                 </specificerrmsg>
-            </inpost_paczkomaty>
+            </inpost>
         </carriers>
     </default>
 </config>

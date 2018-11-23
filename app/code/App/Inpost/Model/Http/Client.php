@@ -95,7 +95,7 @@ class Client
         $url = $this->getApiBaseUrl() . '/v1/points?page=' . $page;
         $client = $this->curlClientFactory->create();
 
-        $client->addHeader('X-User-Agent', 'Solar - Magento2');
+        $client->addHeader('X-User-Agent', 'PWR - Magento2');
         $client->addHeader(
             'Authorization',
             sprintf('%s %s', 'Bearer', $this->inpostConfig->getConfig(Config::XML_API_TOKEN))

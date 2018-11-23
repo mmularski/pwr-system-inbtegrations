@@ -1,0 +1,102 @@
+<?php
+
+use App\Inpost\Block\Customer\Point;
+
+/** @var $block Point */
+?>
+<style>
+    #map_wrapper {
+        height: 400px;
+    }
+
+    #map_canvas {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<h2>Your Inpost Point: <?php echo $block->getCustomerInpostPoint(); ?></h2>
+<br>
+<div id="map_wrapper">
+    <div id="map_canvas" class="mapping"></div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+    jQuery(function ($) {
+        var script = document.createElement('script');
+        script.src = "//maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+        document.body.appendChild(script);
+    });
+
+    function initialize() {
+        var map;
+        var bounds = new google.maps.LatLngBounds();
+        var mapOptions = {
+            mapTypeId: 'roadmap'
+        };
+
+        // Display a map on the page
+        map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+        map.setTilt(45);
+
+        $.when(
+            $.ajax('<?php echo $block->getInpostUrl(); ?>', {
+                success: function (data) {
+                },
+                error: function () {
+                    alert('Something went wrong.');
+                }
+            })
+        ).then(function (allPoints) {
+            // Display multiple markers on a map
+            var infoWindow = new google.maps.InfoWindow(), marker, i;
+
+            // Loop through our array of markers & place each one on the map
+            for (i = 0; i < allPoints.length; i++) {
+                var position = new google.maps.LatLng(allPoints[i].latitude, allPoints[i].longitude);
+                bounds.extend(position);
+                marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: allPoints[i].name
+                });
+
+                // Allow each marker to have an info window
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    return function () {
+                        var pointName = allPoints[i].name;
+
+                        infoWindow.setContent('<strong>' + allPoints[i].location_description + '</strong>' +
+                            '<br><br><button onclick="setPoint(\''+pointName+'\')">Choose this point!</button>'
+                        );
+                        infoWindow.open(map, marker);
+                    }
+                })(marker, i));
+
+                // Automatically center the map fitting all markers on the screen
+                map.fitBounds(bounds);
+            }
+
+            map.setCenter({lat: 51.1078, lng: 17.0385});
+            map.setZoom(10);
+        });
+    }
+
+    function setPoint(pointName) {
+        $.ajax({
+            url: "<?php echo $block->getSaveInpostUrl(); ?>",
+            type: "post",
+            data: JSON.stringify({'pointName': pointName}),
+            contentType: 'application/json',
+            dataType:'json',
+            success: function () {
+                alert('Point ' + pointName + 'has been successfully added to you account.');
+                window.location.href = '/inpost/customer/point';
+            },
+            error: function () {
+                alert('Something went wrong.');
+            }
+        });
+    }
+
+</script>
